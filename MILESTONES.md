@@ -12,22 +12,22 @@
 ## v0.1.1 — Bug Fixes & Hardening
 
 ### Fix
-- [ ] **Telegram webhook verification** — `verify_telegram` returns `true` always; implement `secret_token` header verification via `setWebhook` API
-- [ ] **Webhook payload crash on missing keys** — `parse_webhook` methods crash on malformed payloads with missing nested keys; add nil guards throughout
-- [ ] **WhatsApp signature comparison length mismatch** — `secure_compare` fails if signature has different byte length than expected; handle gracefully
-- [ ] **HTTP retry on 429** — RateLimitError is raised but never retried; add exponential backoff for 429 responses with `Retry-After` header parsing
+- [x] **Telegram webhook verification** — `verify_telegram` returns `true` always; implement `secret_token` header verification via `setWebhook` API
+- [x] **Webhook payload crash on missing keys** — `parse_webhook` methods crash on malformed payloads with missing nested keys; add nil guards throughout
+- [x] **WhatsApp signature comparison length mismatch** — `secure_compare` fails if signature has different byte length than expected; handle gracefully
+- [x] **HTTP retry on 429** — RateLimitError is raised but never retried; add exponential backoff for 429 responses with `Retry-After` header parsing
 
 ### Add
-- [ ] Input validation: reject empty `to`/`chat_id`, enforce WhatsApp 4096 char text limit, Telegram 4096 char limit
-- [ ] Phone number normalization (strip spaces, ensure `+` prefix for WhatsApp)
-- [ ] Raw response access on ApiError (`error.response` for debugging)
-- [ ] Logging hooks (`on_request`, `on_response`, `on_error` callbacks in Configuration)
+- [x] Input validation: reject empty `to`/`chat_id`, enforce WhatsApp 4096 char text limit, Telegram 4096 char limit
+- [x] Phone number normalization (strip spaces, ensure `+` prefix for WhatsApp)
+- [x] Raw response access on ApiError (`error.response` for debugging)
+- [x] Logging hooks (`on_request`, `on_response`, `on_error` callbacks in Configuration)
 
 ### Test
-- [ ] Malformed webhook payloads (nil entry, missing changes, empty messages array)
-- [ ] HTTP retry logic (timeout → retry → success)
-- [ ] Rate limit handling (429 → backoff → retry)
-- [ ] Phone number edge cases (with/without +, spaces, dashes)
+- [x] Malformed webhook payloads (nil entry, missing changes, empty messages array)
+- [x] HTTP retry logic (timeout → retry → success)
+- [x] Rate limit handling (429 → backoff → retry)
+- [x] Phone number edge cases (with/without +, spaces, dashes)
 
 ---
 
