@@ -57,6 +57,103 @@ module ConnectorRuby
         post_message(payload)
       end
 
+      def send_template(to:, template_name:, language: "en", components: [])
+        validate_send!(to: to)
+        payload = {
+          messaging_product: "whatsapp",
+          to: to,
+          type: "template",
+          template: {
+            name: template_name,
+            language: { code: language },
+            components: components
+          }
+        }
+        post_message(payload)
+      end
+
+      def send_document(to:, url:, filename: nil, caption: nil)
+        validate_send!(to: to)
+        doc = { link: url }
+        doc[:filename] = filename if filename
+        doc[:caption] = caption if caption
+
+        payload = {
+          messaging_product: "whatsapp",
+          to: to,
+          type: "document",
+          document: doc
+        }
+        post_message(payload)
+      end
+
+      def send_location(to:, latitude:, longitude:, name: nil, address: nil)
+        validate_send!(to: to)
+        location = { latitude: latitude, longitude: longitude }
+        location[:name] = name if name
+        location[:address] = address if address
+
+        payload = {
+          messaging_product: "whatsapp",
+          to: to,
+          type: "location",
+          location: location
+        }
+        post_message(payload)
+      end
+
+      def send_contact(to:, name:, phone:)
+        validate_send!(to: to)
+        payload = {
+          messaging_product: "whatsapp",
+          to: to,
+          type: "contacts",
+          contacts: [{
+            name: { formatted_name: name },
+            phones: [{ phone: phone }]
+          }]
+        }
+        post_message(payload)
+      end
+
+      def send_reaction(to:, message_id:, emoji:)
+        validate_send!(to: to)
+        payload = {
+          messaging_product: "whatsapp",
+          to: to,
+          type: "reaction",
+          reaction: { message_id: message_id, emoji: emoji }
+        }
+        post_message(payload)
+      end
+
+      def send_list(to:, body:, button_text:, sections:)
+        validate_send!(to: to, text: body)
+        payload = {
+          messaging_product: "whatsapp",
+          to: to,
+          type: "interactive",
+          interactive: {
+            type: "list",
+            body: { text: body },
+            action: {
+              button: button_text,
+              sections: sections
+            }
+          }
+        }
+        post_message(payload)
+      end
+
+      def mark_as_read(message_id:)
+        payload = {
+          messaging_product: "whatsapp",
+          status: "read",
+          message_id: message_id
+        }
+        post_message(payload)
+      end
+
       def self.parse_webhook(body, signature: nil)
         data = body.is_a?(String) ? JSON.parse(body) : body
 

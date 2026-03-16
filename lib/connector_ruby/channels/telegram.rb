@@ -38,6 +38,24 @@ module ConnectorRuby
         api_call("sendPhoto", payload)
       end
 
+      def send_document(chat_id:, url:, caption: nil)
+        validate_send!(chat_id: chat_id)
+        payload = { chat_id: chat_id, document: url }
+        payload[:caption] = caption if caption
+        api_call("sendDocument", payload)
+      end
+
+      def send_location(chat_id:, latitude:, longitude:)
+        validate_send!(chat_id: chat_id)
+        payload = { chat_id: chat_id, latitude: latitude, longitude: longitude }
+        api_call("sendLocation", payload)
+      end
+
+      def send_typing(chat_id:)
+        validate_send!(chat_id: chat_id)
+        api_call("sendChatAction", { chat_id: chat_id, action: "typing" })
+      end
+
       def self.parse_webhook(body)
         data = body.is_a?(String) ? JSON.parse(body) : body
 

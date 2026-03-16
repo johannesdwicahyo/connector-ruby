@@ -10,6 +10,11 @@ require_relative "connector_ruby/webhook_verifier"
 require_relative "connector_ruby/channels/base"
 require_relative "connector_ruby/channels/whatsapp"
 require_relative "connector_ruby/channels/telegram"
+require_relative "connector_ruby/channels/messenger"
+require_relative "connector_ruby/channels/line"
+require_relative "connector_ruby/channels/slack"
+require_relative "connector_ruby/batch_sender"
+require_relative "connector_ruby/delivery_tracker"
 
 module ConnectorRuby
   class << self
@@ -29,4 +34,7 @@ module ConnectorRuby
   # Convenience aliases
   WhatsApp = Channels::WhatsApp
   Telegram = Channels::Telegram
+  Messenger = Channels::Messenger
+  Line = Channels::Line
+  Slack = Channels::Slack
 end
