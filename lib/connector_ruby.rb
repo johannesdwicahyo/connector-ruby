@@ -13,6 +13,7 @@ require_relative "connector_ruby/channels/telegram"
 require_relative "connector_ruby/channels/messenger"
 require_relative "connector_ruby/channels/line"
 require_relative "connector_ruby/channels/slack"
+require_relative "connector_ruby/channels/livechat"
 require_relative "connector_ruby/batch_sender"
 require_relative "connector_ruby/delivery_tracker"
 
@@ -37,4 +38,5 @@ module ConnectorRuby
   Messenger = Channels::Messenger
   Line = Channels::Line
   Slack = Channels::Slack
+  LiveChat = Channels::LiveChat
 end

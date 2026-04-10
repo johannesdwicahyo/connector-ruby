@@ -59,29 +59,58 @@
 
 ---
 
-## v0.3.0 — Rails Integration & Advanced Features
+## v0.3.0 — Webhook Verifiers & LiveChat
 
-### Add: Rails
-- [ ] `ConnectorRuby::Rails::Railtie` — auto-configure from Rails credentials
-- [ ] `ConnectorRuby::Rails::WebhookController` — mountable webhook endpoint at `/webhooks/:channel`
-- [ ] Route generator: `rails generate connector:install`
-- [ ] ActiveJob integration for async message sending
+> **Reshape note:** The original v0.3.0 plan (Rails integration, Instagram/Discord/Email, advanced features) has been redistributed to v0.4.0 and v0.5.0. This release was retargeted to unblock the omnibot Phase 2.4 channel rollout (`docs/superpowers/plans/2026-04-07-additional-channels.md`).
+
+### Add: Webhook Verifiers
+- [ ] `WebhookVerifier.verify_messenger(payload:, signature:, app_secret:)` — HMAC-SHA256, `X-Hub-Signature-256` (#37)
+- [ ] `WebhookVerifier.verify_line(payload:, signature:, channel_secret:)` — Base64 HMAC-SHA256, `X-Line-Signature` (#38)
+- [ ] `WebhookVerifier.verify_slack(payload:, timestamp:, signature:, signing_secret:, tolerance:)` — v0 signature with replay protection (#39)
+- [ ] `WebhookVerifier.verify_livechat(payload:, signature:, client_secret:)` — HMAC-SHA256 (#40)
 
 ### Add: Channels
-- [ ] **Instagram** — `Channels::Instagram` (DM API)
-- [ ] **Discord** — `Channels::Discord` (Bot API, webhook integration)
-- [ ] **Email** — `Channels::Email` via SendGrid/Mailgun (send/receive via webhook)
+- [ ] **LiveChat (minimal)** — `Channels::LiveChat` with `send_text` + `parse_webhook` via LiveChat Agent API (#41). Buttons/images/rich content intentionally deferred.
 
-### Add: Features
-- [ ] **Conversation state** — Track conversation context per user across channels
-- [ ] **Multi-tenancy** — Per-tenant channel credentials
-- [ ] **Message queuing** — Outbox pattern with retry for failed sends
-- [ ] **Webhook signature rotation** — Handle key rotation without downtime
-- [ ] **Channel-specific adapters** — Rich message types per platform (carousel, cards, etc.)
+### Docs
+- [ ] README rewrite — 5-channel coverage, per-channel webhook verification, v0.2.0 feature table (#42)
+- [ ] CHANGELOG entry + version bump to 0.3.0 (#43)
+
+### Release
+- [ ] Tag, publish to RubyGems.org, bump omnibot pin to `~> 0.3` (#44)
+
+---
+
+## v0.4.0 — Rails Integration
+
+> Deferred from the original v0.3.0 plan. Not a Phase 2.4 blocker because Wicara handles its own Rails wiring; connector-ruby only needs to provide clean transport + verification primitives.
+
+### Add: Rails
+- [ ] `ConnectorRuby::Rails::Railtie` — auto-configure from Rails credentials (#17)
+- [ ] `ConnectorRuby::Rails::WebhookController` — mountable webhook endpoint at `/webhooks/:channel` (#18)
+- [ ] Route generator: `rails generate connector:install` (#19)
+- [ ] ActiveJob integration for async message sending (#20)
 
 ### Integrate
-- [ ] **Omnibot** — Replace hand-written channel adapters (~150 LOC each → ~30 LOC)
-- [ ] `ConnectorRuby::Event` → Omnibot internal message format mapper
+- [ ] **Omnibot** — Replace hand-written channel adapters (~150 LOC each → ~30 LOC); `ConnectorRuby::Event` → Omnibot internal message format mapper (#29)
+
+---
+
+## v0.5.0 — Channel Expansion & Advanced Features
+
+> Deferred from the original v0.3.0 plan. No current downstream consumer in wicara.dev.
+
+### Add: Channels
+- [ ] **Instagram** — `Channels::Instagram` (DM API) (#21)
+- [ ] **Discord** — `Channels::Discord` (Bot API, webhook integration) (#22)
+- [ ] **Email** — `Channels::Email` via SendGrid/Mailgun (send/receive via webhook) (#23)
+
+### Add: Features
+- [ ] **Conversation state** — Track conversation context per user across channels (#24)
+- [ ] **Multi-tenancy** — Per-tenant channel credentials (#25)
+- [ ] **Message queuing** — Outbox pattern with retry for failed sends (#26)
+- [ ] **Webhook signature rotation** — Handle key rotation without downtime (#27)
+- [ ] **Channel-specific rich adapters** — Carousels, cards, per-platform rich message types (#28)
 
 ---
 
