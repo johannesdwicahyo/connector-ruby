@@ -1,126 +1,81 @@
-# connector-ruby Milestones
+# connector-ruby — Milestones
 
-## Current State (v0.1.0)
+> **Source of truth:** https://github.com/johannesdwicahyo/connector-ruby/milestones
+> **Last synced:** 2026-04-14
 
-- WhatsApp Cloud API: send text, buttons, image + webhook parsing
-- Telegram Bot API: send text, buttons, image + webhook parsing
-- Unified Event model, HTTP client with retries, HMAC webhook verification
-- 18 tests, 42 assertions — all passing
+This file mirrors the GitHub milestones for this repo. Edit the milestone or issues on GitHub and re-sync, do not hand-edit.
 
----
+## v1.0.0 (**open**)
 
-## v0.1.1 — Bug Fixes & Hardening
+_Production ready: API stability guarantee, comprehensive documentation, performance benchmarks, thread safety, connection pooling, circuit breaker, metrics/instrumentation_
 
-### Fix
-- [x] **Telegram webhook verification** — `verify_telegram` returns `true` always; implement `secret_token` header verification via `setWebhook` API
-- [x] **Webhook payload crash on missing keys** — `parse_webhook` methods crash on malformed payloads with missing nested keys; add nil guards throughout
-- [x] **WhatsApp signature comparison length mismatch** — `secure_compare` fails if signature has different byte length than expected; handle gracefully
-- [x] **HTTP retry on 429** — RateLimitError is raised but never retried; add exponential backoff for 429 responses with `Retry-After` header parsing
+- [ ] #30 API stability guarantee and deprecation policy
+- [ ] #31 Comprehensive documentation with per-channel guides
+- [ ] #32 Performance benchmarks (messages/sec per channel)
+- [ ] #33 Thread safety audit for concurrent sends
+- [ ] #34 Connection pooling for HTTP client
+- [ ] #35 Circuit breaker pattern for channel outages
+- [ ] #36 Metrics and instrumentation (ActiveSupport::Notifications)
 
-### Add
-- [x] Input validation: reject empty `to`/`chat_id`, enforce WhatsApp 4096 char text limit, Telegram 4096 char limit
-- [x] Phone number normalization (strip spaces, ensure `+` prefix for WhatsApp)
-- [x] Raw response access on ApiError (`error.response` for debugging)
-- [x] Logging hooks (`on_request`, `on_response`, `on_error` callbacks in Configuration)
+## v0.5.0 (**open**)
 
-### Test
-- [x] Malformed webhook payloads (nil entry, missing changes, empty messages array)
-- [x] HTTP retry logic (timeout → retry → success)
-- [x] Rate limit handling (429 → backoff → retry)
-- [x] Phone number edge cases (with/without +, spaces, dashes)
+_Channel expansion + advanced features — Instagram, Discord, Email, conversation state, multi-tenancy, outbox pattern, signature rotation, rich adapters_
 
----
+- [ ] #21 Add Instagram DM channel
+- [ ] #22 Add Discord channel
+- [ ] #23 Add Email channel via SendGrid/Mailgun
+- [ ] #24 Add conversation state tracking
+- [ ] #25 Add multi-tenancy support
+- [ ] #26 Add message queuing with outbox pattern
+- [ ] #27 Add webhook signature rotation support
+- [ ] #28 Add channel-specific rich message adapters
 
-## v0.2.0 — New Channels & Message Types
+## v0.4.0 (**open**)
 
-### Add: Channels
-- [ ] **Facebook Messenger** — `Channels::Messenger` (send/receive text, buttons, quick replies, templates)
-- [ ] **LINE Messaging API** — `Channels::Line` (send/receive text, flex messages, rich menus)
-- [ ] **Slack Web API** — `Channels::Slack` (send/receive text, blocks, attachments)
+_Rails integration release — Railtie, mountable WebhookController, install generator, ActiveJob integration, omnibot helper_
 
-### Add: Message Types
-- [ ] **WhatsApp templates** — `send_template(to:, template_name:, language:, components:)`
-- [ ] **Document/file sending** — `send_document(to:, url:, filename:)` for WhatsApp + Telegram
-- [ ] **Location sharing** — `send_location(to:, latitude:, longitude:, name:)`
-- [ ] **Contact cards** — `send_contact(to:, name:, phone:)`
-- [ ] **Reactions** — `send_reaction(to:, message_id:, emoji:)` for WhatsApp
-- [ ] **Interactive lists** — `send_list(to:, body:, sections:)` for WhatsApp
+- [ ] #17 Add Rails Railtie for auto-configuration
+- [ ] #18 Add mountable WebhookController
+- [ ] #19 Add Rails install generator
+- [ ] #20 Add ActiveJob integration for async sending
+- [ ] #29 Omnibot integration
 
-### Add: Features
-- [ ] **Message builder DSL** — Fluent API: `Message.to("+62...").text("Hi").buttons([...]).send!`
-- [ ] **Delivery tracking** — Correlate sent message IDs with status webhooks
-- [ ] **Typing indicators** — `send_typing(chat_id:)` for Telegram, `mark_as_read` for WhatsApp
-- [ ] **Batch sending** — `send_batch(messages)` with rate limiting
+## v0.3.0 (**closed** — released 2026-04-11)
 
-### Test
-- [ ] Each new channel: send text/buttons/image, parse webhooks
-- [ ] New message types: document, location, contact, template
-- [ ] Cross-channel event normalization (same message from WA vs TG vs Messenger produces same Event)
+_Webhook verifiers for Messenger/LINE/Slack/LiveChat + minimal LiveChat channel. Reshaped from the original "Rails integration" plan to unblock omnibot Phase 2.4. Rails work moved to v0.4.0; channel expansion + advanced features moved to v0.5.0._
 
----
+- [x] #37 Add WebhookVerifier.verify_messenger
+- [x] #38 Add WebhookVerifier.verify_line
+- [x] #39 Add WebhookVerifier.verify_slack
+- [x] #40 Add WebhookVerifier.verify_livechat
+- [x] #41 Add Channels::LiveChat (minimal)
+- [x] #42 Rewrite README for 5-channel coverage
+- [x] #43 Update CHANGELOG and bump version to 0.3.0
+- [x] #44 Release connector-ruby v0.3.0
 
-## v0.3.0 — Webhook Verifiers & LiveChat
+## v0.2.0 (**closed**)
 
-> **Reshape note:** The original v0.3.0 plan (Rails integration, Instagram/Discord/Email, advanced features) has been redistributed to v0.4.0 and v0.5.0. This release was retargeted to unblock the omnibot Phase 2.4 channel rollout (`docs/superpowers/plans/2026-04-07-additional-channels.md`).
+_New channels (Facebook Messenger, LINE, Slack) & message types (templates, documents, location, contacts, reactions, lists, builder DSL, delivery tracking, typing indicators, batch sending)_
 
-### Add: Webhook Verifiers
-- [ ] `WebhookVerifier.verify_messenger(payload:, signature:, app_secret:)` — HMAC-SHA256, `X-Hub-Signature-256` (#37)
-- [ ] `WebhookVerifier.verify_line(payload:, signature:, channel_secret:)` — Base64 HMAC-SHA256, `X-Line-Signature` (#38)
-- [ ] `WebhookVerifier.verify_slack(payload:, timestamp:, signature:, signing_secret:, tolerance:)` — v0 signature with replay protection (#39)
-- [ ] `WebhookVerifier.verify_livechat(payload:, signature:, client_secret:)` — HMAC-SHA256 (#40)
+- [x] #1 Add Facebook Messenger channel
+- [x] #2 Add LINE Messaging API channel
+- [x] #3 Add Slack Web API channel
+- [x] #4 Add WhatsApp template message support
+- [x] #5 Add document/file sending
+- [x] #6 Add location sharing
+- [x] #7 Add contact card sending
+- [x] #8 Add message reactions for WhatsApp
+- [x] #9 Add interactive lists for WhatsApp
+- [x] #10 Add message builder DSL
+- [x] #11 Add delivery tracking
+- [x] #12 Add typing indicators
+- [x] #13 Add batch sending with rate limiting
+- [x] #14 Tests for new channels (Messenger, LINE, Slack)
+- [x] #15 Tests for new message types
+- [x] #16 Tests for cross-channel event normalization
 
-### Add: Channels
-- [ ] **LiveChat (minimal)** — `Channels::LiveChat` with `send_text` + `parse_webhook` via LiveChat Agent API (#41). Buttons/images/rich content intentionally deferred.
+## v0.1.1 (**closed**)
 
-### Docs
-- [ ] README rewrite — 5-channel coverage, per-channel webhook verification, v0.2.0 feature table (#42)
-- [ ] CHANGELOG entry + version bump to 0.3.0 (#43)
+_Bug fixes & hardening: Telegram webhook verification, payload crash fixes, WhatsApp signature handling, HTTP 429 retry, input validation, phone normalization, logging hooks_
 
-### Release
-- [ ] Tag, publish to RubyGems.org, bump omnibot pin to `~> 0.3` (#44)
-
----
-
-## v0.4.0 — Rails Integration
-
-> Deferred from the original v0.3.0 plan. Not a Phase 2.4 blocker because Wicara handles its own Rails wiring; connector-ruby only needs to provide clean transport + verification primitives.
-
-### Add: Rails
-- [ ] `ConnectorRuby::Rails::Railtie` — auto-configure from Rails credentials (#17)
-- [ ] `ConnectorRuby::Rails::WebhookController` — mountable webhook endpoint at `/webhooks/:channel` (#18)
-- [ ] Route generator: `rails generate connector:install` (#19)
-- [ ] ActiveJob integration for async message sending (#20)
-
-### Integrate
-- [ ] **Omnibot** — Replace hand-written channel adapters (~150 LOC each → ~30 LOC); `ConnectorRuby::Event` → Omnibot internal message format mapper (#29)
-
----
-
-## v0.5.0 — Channel Expansion & Advanced Features
-
-> Deferred from the original v0.3.0 plan. No current downstream consumer in wicara.dev.
-
-### Add: Channels
-- [ ] **Instagram** — `Channels::Instagram` (DM API) (#21)
-- [ ] **Discord** — `Channels::Discord` (Bot API, webhook integration) (#22)
-- [ ] **Email** — `Channels::Email` via SendGrid/Mailgun (send/receive via webhook) (#23)
-
-### Add: Features
-- [ ] **Conversation state** — Track conversation context per user across channels (#24)
-- [ ] **Multi-tenancy** — Per-tenant channel credentials (#25)
-- [ ] **Message queuing** — Outbox pattern with retry for failed sends (#26)
-- [ ] **Webhook signature rotation** — Handle key rotation without downtime (#27)
-- [ ] **Channel-specific rich adapters** — Carousels, cards, per-platform rich message types (#28)
-
----
-
-## v1.0.0 — Production Ready
-
-### Refine
-- [ ] API stability guarantee (semantic versioning, deprecation policy)
-- [ ] Comprehensive documentation with per-channel guides
-- [ ] Performance benchmarks (messages/sec per channel)
-- [ ] Thread safety audit for concurrent sends
-- [ ] Connection pooling for HTTP client
-- [ ] Circuit breaker pattern for channel outages
-- [ ] Metrics/instrumentation (ActiveSupport::Notifications compatible)
+_No issues._ (0 open, 0 closed reported)
